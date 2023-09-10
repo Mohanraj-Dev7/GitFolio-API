@@ -4,23 +4,37 @@ import json
 from flask import Flask
 from flask import request
 
+'''
+Web scrapping modules ---> requests,bs4
+API                   ---> flask,Json
+
+Reach out the API through this link;
+                gitfolio.pythonanywhere.com
+'''
+#codeScrapper is method to scrape a content of whole github repository page 
 def codeScrapper(profileName):
         URL=f"https://github.com/{profileName}?tab=repositories"
         page=requests.get(URL)
         soup=BeautifulSoup(page.content,"html.parser")
+        #find particular set of content of that repository page like list of reopos
         response=soup.find("div",id="user-repositories-list")
         return response
 
 def repoScrapper(response):
         repoJson=[]
         repoList=response.find_all("div",class_="col-10 col-lg-9 d-inline-block")
+        #repoList contains the list of repository containers(div) 
         for i in repoList:
+                #from dict(python) create single "key":"value" pair based objects
                 repoJsonElement=dict().fromkeys(["repoName","repoLink","desc","techStack","stars","forks","watching"])
+
                 repo=str(i.find("a",itemprop="name codeRepository")).strip()
                 desc=str(i.find("p",itemprop="description"))
+                
                 repoName=repo[repo.index(">")+1:].strip().replace("</a>",'')
-                repoJsonElement["repoName"]=repoName
                 repoLink="https://github.com"+repo[repo.index("href=")+6:repo.index(" itemprop=")-1]
+                #Assign repository name,link and so on.. into python dict object
+                repoJsonElement["repoName"]=repoName
                 repoJsonElement["repoLink"]=repoLink
 
                 if('itemprop="description"' in desc):
@@ -32,8 +46,8 @@ def repoScrapper(response):
                 soup=BeautifulSoup(page.content,"html.parser")
                 response=soup.find_all("div",class_="BorderGrid-row")
 
+                #fetch some other contents related to particular repository
                 if(len(response)!=0):
-
                         statusResponse=(response[0]).find_all('strong')
                         for i in range(len(statusResponse)):
                                 statusResponse[i]=int((str(statusResponse[i]).replace('/','')).replace('<strong>',''))
@@ -50,15 +64,18 @@ def repoScrapper(response):
                         repoJsonElement["techStack"]=sorted(techStack)
 
                 repoJson.append(repoJsonElement)
+                #convert the python(dict) content into json format as API response
         return(json.dumps({"projects":repoJson}))
 
+#Using flash application to create API 
 app=Flask(__name__)
 
+#default page loaded like (index page)
 @app.route('/')
 def index():
         return 'This is automation based api to fetch all repository related contents form required github profile through API call.<br>Use the link to fetch git profile contents; {this website}/git/?profile="[Github userName]"'
 
-
+#fetch github profile based repository content
 @app.route('/git/')
 def gitProfileContent():
         profileName=request.args.get('profile')[1:-1]
