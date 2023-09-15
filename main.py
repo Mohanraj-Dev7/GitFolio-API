@@ -16,7 +16,7 @@ def codeScrapper(profileName):
         URL=f"https://github.com/{profileName}?tab=repositories"
         page=requests.get(URL)
         soup=BeautifulSoup(page.content,"html.parser")
-        #find particular set of content of that repository page like list of reopos
+        #find particular set of content of that repository page like "list of reopos"
         response=soup.find("div",id="user-repositories-list")
         return response
 
