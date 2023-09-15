@@ -88,4 +88,3 @@ def gitProfileContent():
                         raise Exception
         except Exception as e:
                 return "ProfileName not found , kindly check your profileName "
-
