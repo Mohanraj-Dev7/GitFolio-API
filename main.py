@@ -24,6 +24,7 @@ def repoScrapper(response):
         repoJson=[]
         repoList=response.find_all("div",class_="col-10 col-lg-9 d-inline-block")
         #repoList contains the list of repository containers(div) 
+        #print(repoList)
         for i in repoList:
                 #from dict(python) create single "key":"value" pair based objects
                 repoJsonElement=dict().fromkeys(["repoName","repoLink","desc","techStack","stars","forks","watching"])
@@ -46,6 +47,7 @@ def repoScrapper(response):
                 soup=BeautifulSoup(page.content,"html.parser")
                 response=soup.find_all("div",class_="BorderGrid-row")
 
+                #print(repoName,response,len(response))
                 #fetch some other contents related to particular repository
                 if(len(response)!=0):
                         statusResponse=(response[0]).find_all('strong')
@@ -56,12 +58,14 @@ def repoScrapper(response):
                         repoJsonElement["forks"]=forks
                         repoJsonElement["watching"]=watching
 
-                        techStackResponse=((response[-1]).find('ul',class_="list-style-none").find_all('span',class_="color-fg-default text-bold mr-1"))
-                        techStack=[]
-                        for i in(techStackResponse):
-                                i=str(i)
-                                techStack.append(i[i.index('>')+1:-7])
-                        repoJsonElement["techStack"]=sorted(techStack)
+                        #Only if the repository has some more feilds like technologies used...
+                        if(len(response)==5):
+                                techStackResponse=((response[-1]).find('ul',class_="list-style-none").find_all('span',class_="color-fg-default text-bold mr-1"))
+                                techStack=[]
+                                for i in(techStackResponse):
+                                        i=str(i)
+                                        techStack.append(i[i.index('>')+1:-7])
+                                repoJsonElement["techStack"]=sorted(techStack)
 
                 repoJson.append(repoJsonElement)
                 #convert the python(dict) content into json format as API response
@@ -81,10 +85,13 @@ def gitProfileContent():
         profileName=request.args.get('profile')[1:-1]
         try:
                 response=codeScrapper(profileName)
-                print(response)
+                #print(response)
                 if response!=None:
                         return repoScrapper(response)
                 else:
                         raise Exception
         except Exception as e:
                 return "ProfileName not found , kindly check your profileName "
+
+if __name__=='__main__':
+        app.run()
