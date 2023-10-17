@@ -1,8 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
-import json
-from flask import Flask
-from flask import request
+from flask import Flask,request,jsonify
+from flask_cors import CORS
 
 '''
 Web scrapping modules ---> requests,bs4
@@ -73,6 +72,7 @@ def repoScrapper(response):
 
 #Using flash application to create API 
 app=Flask(__name__)
+CORS(app)
 
 #default page loaded like (index page)
 @app.route('/')
