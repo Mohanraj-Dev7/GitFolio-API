@@ -68,7 +68,7 @@ def repoScrapper(response):
 
                 repoJson.append(repoJsonElement)
                 #convert the python(dict) content into json format as API response
-        return(json.dumps({"projects":repoJson}))
+        return(jsonify({"projects":repoJson}))
 
 #Using flash application to create API 
 app=Flask(__name__)
