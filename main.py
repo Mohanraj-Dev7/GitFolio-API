@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask,request,jsonify
-from flask_cors import CORS
+import json
+from flask import Flask
+from flask import request
 
 '''
 Web scrapping modules ---> requests,bs4
@@ -68,11 +69,10 @@ def repoScrapper(response):
 
                 repoJson.append(repoJsonElement)
                 #convert the python(dict) content into json format as API response
-        return(jsonify({"projects":repoJson}))
+        return(json.dumps({"projects":repoJson}))
 
 #Using flash application to create API 
 app=Flask(__name__)
-CORS(app)
 
 #default page loaded like (index page)
 @app.route('/')
@@ -93,5 +93,5 @@ def gitProfileContent():
         except Exception as e:
                 return "ProfileName not found , kindly check your profileName "
 
-if __name__=='__main__':
-        app.run()
+#if __name__=='__main__':
+#        app.run()
