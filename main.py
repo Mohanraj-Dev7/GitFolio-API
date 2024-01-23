@@ -9,7 +9,7 @@ Web scrapping modules ---> requests,bs4
 API                   ---> flask,Json
 
 Reach out the API through this link;
-                gitfolio.pythonanywhere.com
+        https://gitfolio-api.onrender.com
 '''
 #codeScrapper is method to scrape a content of whole github repository page 
 def codeScrapper(profileName):
@@ -93,5 +93,6 @@ def gitProfileContent():
         except Exception as e:
                 return "ProfileName not found , kindly check your profileName "
 
+#this only for local server not need to inculde in production env.
 #if __name__=='__main__':
 #        app.run()
