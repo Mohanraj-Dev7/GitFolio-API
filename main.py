@@ -23,12 +23,11 @@ def urlToSoup(URL):
 
 #codeScrapper is method to scrape a content of whole github repositories in main page 
 def codeScrapper(profileName):
-        URL=f"https://github.com/SHK-MNRJ"
+        URL=f"https://github.com/{profileName}"
         soup=urlToSoup(URL)
         #Find particular set of content of that main page like "list of reopos"
         response=soup.find_all("div",class_="pinned-item-list-item-content")
         return response
-
 
 def repoScrapper(response,contents):
         repoJson=[]
@@ -75,8 +74,8 @@ def repoScrapper(response,contents):
 #Default page loaded like (index page)
 @app.route('/')
 def index():
-        return '''This is automation based api to fetch all repository related contents
-                  form required github profile through API call.<br>
+        return '''This is web Scrapping based api to fetch all repository related contents
+                  from required github profile through API call.<br>
                   Use the link to fetch git profile contents;
                   <h3>For Basic contents</h3>
                   {this website}/git/repos/?profile="[Github userName]"&contents="base"<br>
@@ -87,10 +86,11 @@ def index():
 #Fetch github profile based repository content
 @app.route('/git/repos/')
 def gitProfileContent():
-        profileName=request.args.get('profile')
+        profileName=request.args.get('profile')[1:-1]
         responseContent=request.args.get('contents')[1:-1]
+        
+        response=codeScrapper(profileName)
         try:
-                response=codeScrapper(profileName)
                 if response!=None:
                         return repoScrapper(response,responseContent)
                 else:
@@ -99,7 +99,5 @@ def gitProfileContent():
                 return "<h3>ProfileName not found , kindly check your profileName </h3>"
         
 #This only for local server not need to inculde in production env.
-if __name__=='__main__':
-        app.run()
-
-
+#if __name__=='__main__':
+#        app.run()
