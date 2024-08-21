@@ -88,9 +88,9 @@ def index():
 def gitProfileContent():
         profileName=request.args.get('profile')[1:-1]
         responseContent=request.args.get('contents')[1:-1]
-        
-        response=codeScrapper(profileName)
+
         try:
+                response=codeScrapper(profileName)
                 if response!=None:
                         return repoScrapper(response,responseContent)
                 else:
